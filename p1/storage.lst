@@ -1,0 +1,50 @@
+     1                                  ; Gabe Imlay
+     2                                  ; Project 1: Data Storage
+     3                                  ; 9/21/22
+     4                                  ; This is the first project we are doing in CSC322
+     5                                  
+     6                                  SECTION .data
+     7                                  ; define data/variables here.  Think DB, DW, DD, DQ
+     8 00000000 02000400060008000A-     a1:	DW	2,4,6,8,10
+     9 00000009 00                 
+    10 0000000A 0102030405              b1:	DB	1,2,3,4,5
+    11 0000000F 0A000000140000001E-     c1:	DD	10,20,30,40
+    12 00000018 00000028000000     
+    13 0000001F 100000000000000011-     d1:	DQ	10h,11h,12h,13h
+    14 00000028 000000000000001200-
+    15 00000031 000000000000130000-
+    16 0000003A 0000000000         
+    17                                  
+    18 0000003F CEFF                    a2:	DW	-50
+    19 00000041 D3                      b2:	DB	-45
+    20 00000042 E2FF                    c2:	DW	-30
+    21 00000044 E7                      d2:	DB	-25
+    22 00000045 ECFF                    e1:	DW	-20
+    23                                  
+    24 00000047 4265617273              a3:	DB	'Bears'
+    25 0000004C 64000000                b3:	DD	100
+    26 00000050 0000                    c3:	DW	0
+    27 00000052 476F20                  d3:	DB	'Go ' ;space after o
+    28 00000055 4D657263657221          e2:	DB	'Mercer!'
+    29                                  
+    30 0000005C 64                      a4:	DB	100
+    31 0000005D 0001                    b4:	DW	100h
+    32 0000005F 04000000                c4:	DD	100b
+    33 00000063 4000                    d4:	DW	100q
+    34 00000065 64                      e3:	DB	100d
+    35                                  
+    36                                  SECTION .bss
+    37                                  ; define uninitialized data here
+    38                                  
+    39                                  SECTION .text
+    40                                  global _main
+    41                                  _main:
+    42                                  
+    43                                  ; put your code here.
+    44                                  
+    45                                  
+    46                                  
+    47                                  ; Normal termination code
+    48 00000000 B801000000              mov eax, 1
+    49 00000005 BB00000000              mov ebx, 0
+    50 0000000A CD80                    int 80h
