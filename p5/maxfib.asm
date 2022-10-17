@@ -18,67 +18,21 @@ _main:
 
 ; put your code here.
 
-mov AX, 0000d
-mov [Fibs], AX  ;1
-b1:
-mov AX, 0001d
-mov [Fibs+2], AX    ;2
-b2:
-mov AX, [Fibs]
-add AX, [Fibs + 2]
-mov [Fibs+4], AX    ;3
-b3:
-mov AX, [Fibs + 2]
-add AX, [Fibs + 4]
-mov [Fibs + 6], AX  ;4
-b4:
-mov AX, [Fibs + 4]
-add AX, [Fibs + 6]
-mov [Fibs + 8], AX  ;5
-b5:
-mov AX, [Fibs + 6]
-add AX, [Fibs + 8]
-mov [Fibs + 10], AX ;6
-b6:
-mov AX, [Fibs + 8]
-add AX, [Fibs + 10]
-mov [Fibs + 12], AX ;7
-b7:
-mov AX, [Fibs + 10]
-add AX, [Fibs + 12]
-mov [Fibs + 14], AX ;8
-b8:
-mov AX, [Fibs + 12]
-add AX, [Fibs + 14]
-mov [Fibs + 16], AX ;9
-b9:
-mov AX, [Fibs + 14]
-add AX, [Fibs + 16]
-mov [Fibs + 18], AX ;10
-b10:
-mov AX, [Fibs + 16]
-add AX, [Fibs + 18]
-mov [Fibs + 20], AX ;11
-b11:
-mov AX, [Fibs + 18]
-add AX, [Fibs + 20]
-mov [Fibs + 22], AX ;12
-b12:
-mov AX, [Fibs + 20]
-add AX, [Fibs + 22]
-mov [Fibs + 24], AX ;13
-b13:
-mov AX, [Fibs + 22]
-add AX, [Fibs + 24]
-mov [Fibs + 26], AX ;14
-b14:
-mov AX, [Fibs + 24]
-add AX, [Fibs + 26]
-mov [Fibs + 28], AX ;15
-b15:
-mov AX, [Fibs + 26]
-add AX, [Fibs + 28]
-mov [Fibs + 30], AX ;16
+mov EAX, 0 ; use EAX to hold first int
+mov EBX, 1 ; use EBX to hold second int
+mov WORD [FibCount], 2
+top:	
+	mov ECX, EAX ; save a copy of the int in EAX
+	add ECX, EBX ; Determine the next fib num
+	jc stop   ; if there was not a carry, keep looping
+	          ; otherwise EBX has the max unsigned in
+	mov EAX, EBX ; move num in EBX into EAX
+	mov EBX, ECX ; move num in ECX to EBX
+	inc WORD [FibCount] ; increment fib count to keep track of the number of fib nums
+	jmp top ; if there is not a carry above, repeat
+stop:	
+	dec WORD [FibCount] ; decremented by 1 since it is the previous fib
+	mov [MaxFib],EAX ; move the last successful fib number into MaxFib
 lastBreak:
 
 ; Normal termination code

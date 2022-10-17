@@ -1,0 +1,42 @@
+     1                                  ; Gabe Imlay
+     2                                  ; CSC322 <10/19/22>
+     3                                  ; Project 5: Max Fibonacci
+     4                                  ; This project will calculate the largest, unsigned fibonacci 
+     5                                  ; number that can fit into a double word on our machine
+     6                                  
+     7                                  SECTION .data
+     8                                  ; define data/variables here.  Think DB, DW, DD, DQ
+     9                                  
+    10                                  SECTION .bss
+    11                                  ; define uninitialized data here
+    12 00000000 <res 00000004>          MaxFib:     RESD 1
+    13 00000004 <res 00000002>          FibCount:	RESW 1
+    14                                  
+    15                                  SECTION .text
+    16                                  global _main
+    17                                  _main:
+    18                                  
+    19                                  ; put your code here.
+    20                                  
+    21 00000000 B800000000              mov EAX, 0 ; use EAX to hold first int
+    22 00000005 BB01000000              mov EBX, 1 ; use EBX to hold second int
+    23 0000000A 66C705[04000000]02-     mov WORD [FibCount], 2
+    24 00000012 00                 
+    25                                  top:	
+    26 00000013 89C1                    	mov ECX, EAX ; save a copy of the int in EAX
+    27 00000015 01D9                    	add ECX, EBX ; Determine the next fib num
+    28 00000017 720D                    	jc stop   ; if there was not a carry, keep looping
+    29                                  	          ; otherwise EBX has the max unsigned in
+    30 00000019 89D8                    	mov EAX, EBX ; move num in EBX into EAX
+    31 0000001B 89CB                    	mov EBX, ECX ; move num in ECX to EBX
+    32 0000001D 66FF05[04000000]        	inc WORD [FibCount] ; increment fib count to keep track of the number of fib nums
+    33 00000024 EBED                    	jmp top ; if there is not a carry above, repeat
+    34                                  stop:	
+    35 00000026 66FF0D[04000000]        	dec WORD [FibCount] ; decremented by 1 since it is the previous fib
+    36 0000002D A3[00000000]            	mov [MaxFib],EAX ; move the last successful fib number into MaxFib
+    37                                  lastBreak:
+    38                                  
+    39                                  ; Normal termination code
+    40 00000032 B801000000              mov eax, 1
+    41 00000037 BB00000000              mov ebx, 0
+    42 0000003C CD80                    int 80h
