@@ -22,17 +22,16 @@ mov EAX, 0 ; use EAX to hold first int
 mov EBX, 1 ; use EBX to hold second int
 mov WORD [FibCount], 2
 top:	
+	inc WORD [FibCount] ; increment fib count to keep track of the number of fib nums
 	mov ECX, EAX ; save a copy of the int in EAX
 	add ECX, EBX ; Determine the next fib num
-	jc stop   ; if there was not a carry, keep looping
-	          ; otherwise EBX has the max unsigned in
+	js stop   ; if there was not a sign change, keep looping
+	          ; otherwise ECX has the max unsigned in
 	mov EAX, EBX ; move num in EBX into EAX
 	mov EBX, ECX ; move num in ECX to EBX
-	inc WORD [FibCount] ; increment fib count to keep track of the number of fib nums
 	jmp top ; if there is not a carry above, repeat
 stop:	
-	dec WORD [FibCount] ; decremented by 1 since it is the previous fib
-	mov [MaxFib],EAX ; move the last successful fib number into MaxFib
+	mov [MaxFib],ECX ; move the last successful fib number into MaxFib
 lastBreak:
 
 ; Normal termination code
