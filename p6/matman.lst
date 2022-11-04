@@ -1,0 +1,83 @@
+     1                                  ; Gabe Imlay
+     2                                  ; CSC322 <11/02/22>
+     3                                  ; Project 6: Matrix Manipulation
+     4                                  ; This project will calculate the sum of rows and columns in a 2D array 
+     5                                  ; and place those sums into corresponding arrays so that a grand total 
+     6                                  ; for the matrix can be determined
+     7                                  
+     8                                  ;;;;;;;;;;;;;;;;;;;;;;;; TEST CASE 2 ;;;;;;;;;;;;;;;;;;;;;;;;;
+     9                                  ROWS:     	EQU	5	; defines a constant ROWS set to 5.
+    10                                  COLS:      EQU	7	; defines a constant COLS set to 7.
+    11                                  
+    12                                  SECTION .data
+    13 00000000 010002000300040005-     MyMatrix: 	dw	 1,  2,  3,  4,  5,  6,  7
+    14 00000009 0006000700         
+    15 0000000E 080009000A000B000C-     	    	dw	 8,  9, 10, 11, 12, 13, 14
+    16 00000017 000D000E00         
+    17 0000001C 0F0010001100120013-     			dw	15, 16, 17, 18, 19, 20, 21
+    18 00000025 0014001500         
+    19 0000002A 16001700180019001A-     			dw	22, 23, 24, 25, 26, 27, 28
+    20 00000033 001B001C00         
+    21 00000038 1D001E001F00200021-     			dw	29, 30, 31, 32, 33, 34, 35
+    22 00000041 0022002300         
+    23 00000046 00000000                rowSumPos: 	dd 0
+    24 0000004A 00000000                matrixPos:	dd 0
+    25 0000004E 0000                    Sum:		dw 0
+    26                                  SECTION .bss
+    27 00000000 <res 0000000A>          RowSums:	RESW ROWS
+    28 0000000A <res 0000000E>          ColSums:	RESW COLS
+    29                                  
+    30 00000018 <res 00000004>          saveECX:	RESD 1
+    31                                  SECTION .text
+    32                                  global _main
+    33                                  _main:
+    34                                  
+    35                                  ; put your code here.
+    36                                  
+    37                                  ; Calculate the column sums and add them to ColSums
+    38 00000000 31D2                    xor edx, edx ; Used for the col sums
+    39 00000002 B907000000              mov ecx, COLS
+    40                                  OuterColLoop:
+    41 00000007 890D[18000000]          	mov DWORD[saveECX], ecx
+    42 0000000D B905000000              	mov ecx, ROWS
+    43                                  	InnerColLoop:
+    44 00000012 660383[00000000]        		add ax, [MyMatrix + ebx]
+    45 00000019 83C30E                  		add ebx, 2*COLS
+    46 0000001C E2F4                    		loop InnerColLoop
+    47 0000001E 668982[0A000000]        	mov [ColSums+edx], ax
+    48 00000025 6631C0                  	xor ax, ax
+    49 00000028 83EB46                  	sub ebx, 2*COLS*ROWS
+    50 0000002B 83C302                  	add ebx, 2
+    51 0000002E 83C202                  	add edx, 2
+    52 00000031 8B0D[18000000]          	mov ecx, [saveECX]
+    53 00000037 E2CE                    	loop OuterColLoop
+    54                                  
+    55                                  ; Calculate the Row sums and add them to RowSums
+    56                                  ; Also calculate the total sum
+    57 00000039 31C9                    xor ecx, ecx
+    58 0000003B 31C0                    xor eax, eax
+    59 0000003D B905000000              mov ecx, ROWS
+    60                                  OuterRowLoop:
+    61 00000042 890D[18000000]          	mov DWORD[saveECX], ecx
+    62 00000048 B907000000              	mov ecx, COLS
+    63                                  	InnerRowLoop:
+    64 0000004D A1[4A000000]            		mov eax, [matrixPos]
+    65 00000052 668B9400[00000000]      		mov dx, [MyMatrix+eax*2]
+    66                                  
+    67 0000005A 8B1D[46000000]          		mov ebx, [rowSumPos]
+    68 00000060 6601941B[00000000]      		add [RowSums+ebx*2], dx
+    69                                  
+    70 00000068 660115[4E000000]        		add word[Sum], dx
+    71 0000006F FF05[4A000000]          		inc dword[matrixPos]
+    72                                  
+    73 00000075 E2D6                    		loop InnerRowLoop
+    74 00000077 8B0D[18000000]          	mov ecx, [saveECX]
+    75 0000007D FF05[46000000]          	inc dword[rowSumPos]
+    76 00000083 E2BD                    	loop OuterRowLoop
+    77                                  
+    78                                  lastBreak:
+    79                                  
+    80                                  ; Normal termination code
+    81 00000085 B801000000              mov eax, 1
+    82 0000008A BB00000000              mov ebx, 0
+    83 0000008F CD80                    int 80h
