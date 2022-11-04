@@ -1,0 +1,87 @@
+     1                                  ; Bob Allen
+     2                                  ; Demo ifs and for statements
+     3                                  ; Fall 2022
+     4                                  
+     5                                  SECTION .data
+     6                                  ; define data/variables here.  Think DB, DW, DD, DQ
+     7 00000000 3200                    A: dw 50
+     8 00000002 0700                    B: dw 7
+     9 00000004 0000                    C: dw 0
+    10                                  
+    11 00000006 0000                    I: dw 0
+    12 00000008 02000400060008000A-     nums: dw 2,4,6,8,10,12,14,16,18,20,-100
+    13 00000011 000C000E0010001200-
+    14 0000001A 14009CFF           
+    15 0000001E 0000                    sum:  dw 0
+    16 00000020 0000                    count: dw 0
+    17                                  
+    18                                  SECTION .bss
+    19                                  ; define uninitialized data here
+    20                                  
+    21                                  SECTION .text
+    22                                  global _main
+    23                                  _main:
+    24                                  
+    25                                  ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    26                                  ; If A less than B, increment C else decrement C
+    27                                  ;
+    28                                  ; if (A<B)
+    29                                  ;    C++
+    30                                  ; else
+    31                                  ;    C--
+    32                                  
+    33 00000000 66A1[00000000]          	mov ax,[A]
+    34 00000006 663B05[02000000]        	cmp ax,[B]
+    35 0000000D 7D09                    	jge else1
+    36                                  then1:
+    37 0000000F 66FF05[04000000]        	inc WORD [C]
+    38 00000016 EB07                    	jmp done1
+    39                                  else1:
+    40 00000018 66FF0D[04000000]        	dec WORD [C]
+    41                                  done1:
+    42                                  
+    43                                  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    44                                  ; Sum the first five values in array nums
+    45                                  ;
+    46                                  ; for (I=0; I<5; I++)
+    47                                  ;     sum += nums[I]
+    48                                  
+    49 0000001F 66C705[06000000]00-     	mov   WORD [I],0 		; I=0
+    50 00000027 00                 
+    51                                  forTop:
+    52 00000028 66833D[06000000]05      	cmp   WORD [I],5
+    53 00000030 7D1F                    	jge   forend		; I<5 ??
+    54 00000032 0FBF1D[06000000]        	movsx ebx,WORD [I]		; use as index into nums
+    55 00000039 668B841B[08000000]      	mov   ax,[nums+ebx*2]	; get next val from nums
+    56 00000041 660105[1E000000]        	add   [sum],ax		; sum += nums[I]
+    57 00000048 66FF05[06000000]        	inc   WORD [I]		; I++
+    58 0000004F EBD7                    	jmp   forTop
+    59                                  forend:
+    60                                  
+    61                                  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    62                                  ; Count how many integers are in nums before -100 is found
+    63                                  ;
+    64                                  ; I = 0
+    65                                  ; while (nums[I] != -100)
+    66                                  ;    count++
+    67                                  ;    I++
+    68                                  
+    69 00000051 66C705[06000000]00-     	mov   WORD [I],0	; I=0
+    70 00000059 00                 
+    71 0000005A 0FBF1D[06000000]        	movsx ebx, WORD [I]	; for indexing array
+    72 00000061 668B841B[08000000]      	mov   ax,[nums+ebx*2]	; get first number in array
+    73                                  whileTop:
+    74 00000069 6683F89C                	cmp   ax, -100
+    75 0000006D 741F                    	je    whileEnd
+    76 0000006F 66FF05[20000000]        	inc   WORD [count]
+    77 00000076 66FF05[06000000]        	inc   WORD [I]
+    78 0000007D 0FBF1D[06000000]        	movsx ebx, WORD [I]	; for indexing array
+    79 00000084 668B841B[08000000]      	mov   ax,[nums+ebx*2]	; get first number in array
+    80 0000008C EBDB                    	jmp   whileTop
+    81                                  whileEnd:
+    82                                  
+    83                                  lastBreak:
+    84                                  ; Normal termination code
+    85 0000008E B801000000              mov eax, 1
+    86 00000093 BB00000000              mov ebx, 0
+    87 00000098 CD80                    int 80h

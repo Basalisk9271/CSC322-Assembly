@@ -1,0 +1,98 @@
+     1                                  ; REVERSE THE OUTPUT STRING
+     2                                  ; Bob Allen
+     3                                  ; Fall 2022
+     4                                  ; based upon the textbook example:
+     5                                  ; Console Output
+     6                                  ; Materials - NASM (32-bit)
+     7                                  ; Copyright (c) 2017 Hall & Slonka
+     8                                  
+     9                                  ; Uses system call information from Chapter 10
+    10                                  
+    11                                  SECTION .data
+    12 00000000 48656C6C6F20556E69-     s1: DB "Hello Universe it is time to go!!!!", 10, 0
+    13 00000009 766572736520697420-
+    14 00000012 69732074696D652074-
+    15 0000001B 6F20676F212121210A-
+    16 00000024 00                 
+    17                                  lenS1: EQU ($ - s1)
+    18                                  
+    19 00000025 0A                      newline: db 10
+    20                                  SECTION .bss
+    21 00000000 <res 00000025>          r1: RESB lenS1
+    22                                  
+    23                                  SECTION .text
+    24                                  global _main
+    25                                  _main:
+    26                                  
+    27                                  ; Print
+    28 00000000 B804000000              	mov eax, 4     ; syswrite
+    29 00000005 BB01000000              	mov ebx, 1     ; stdout
+    30 0000000A B9[00000000]            	mov ecx, s1    ; starting address of string
+    31 0000000F BA25000000              	mov edx, lenS1 ; len of string
+    32 00000014 CD80                    	int 80h
+    33                                  
+    34                                  ; Reverse the string, char by char from s1 to r1
+    35 00000016 B925000000              	mov ecx,lenS1
+    36 0000001B BB[24000000]            	mov ebx,s1+lenS1-1  	;;; point to the last char of s1
+    37 00000020 BA[00000000]            	mov edx,r1		;;; point to the first char of r1
+    38                                  
+    39                                  revTop:
+    40 00000025 8A23                    	mov ah,[ebx]
+    41 00000027 8822                    	mov [edx],ah
+    42 00000029 42                      	inc edx
+    43 0000002A 4B                      	dec ebx
+    44 0000002B E2F8                    	loop revTop
+    45                                  
+    46                                  ; Reverse Print
+    47 0000002D B804000000              	mov eax, 4     ; syswrite
+    48 00000032 BB01000000              	mov ebx, 1     ; stdout
+    49 00000037 B9[00000000]            	mov ecx, r1    ; starting address of string
+    50 0000003C BA25000000              	mov edx, lenS1 ; len of string
+    51 00000041 CD80                    	int 80h
+    52                                  
+    53                                  ; Print newline
+    54 00000043 B804000000              	mov eax, 4     ; syswrite
+    55 00000048 BB01000000              	mov ebx, 1     ; stdout
+    56 0000004D B9[25000000]            	mov ecx, newline    ; starting address of string
+    57 00000052 BA01000000              	mov edx, 1 ; len of string
+    58 00000057 CD80                    	int 80h
+    59                                  
+    60                                  
+    61                                  done:	
+    62 00000059 B801000000              mov eax, 1
+    63 0000005E BB00000000              mov ebx, 0
+    64 00000063 CD80                    int 80h
+    65                                  
+    66                                  
+    67                                  
+    68                                  
+    69                                  
+    70                                  ; Reverse the string 
+    71 00000065 BB[00000000]            	mov ebx,s1
+    72 0000006A B925000000              	mov ecx,lenS1
+    73                                  top:
+    74 0000006F FF33                    	push DWORD [ebx]
+    75 00000071 43                      	inc  ebx
+    76 00000072 E2FB                    	loop top
+    77                                  
+    78 00000074 BB[00000000]            	mov ebx,s1
+    79 00000079 B925000000              	mov ecx,lenS1
+    80                                  top2:
+    81 0000007E 8F03                    	pop DWORD[ebx]
+    82 00000080 43                      	inc ebx
+    83 00000081 E2FB                    	loop top2
+    84                                  
+    85 00000083 B804000000              print2: mov eax, 4     ; syswrite
+    86 00000088 BB01000000              	mov ebx, 1     ; stdout
+    87 0000008D B9[00000000]            	mov ecx, s1    ; starting address of string
+    88 00000092 BA25000000              	mov edx, lenS1 ; len of string
+    89 00000097 CD80                    	int 80h
+    90                                  
+    91                                  
+    92                                  
+    93                                  
+    94                                  
+    95                                  
+    96                                  
+    97                                  
+    98                                  
