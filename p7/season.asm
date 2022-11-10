@@ -55,7 +55,7 @@ rowLoop:
 	mov ecx, 80
 	mov byte[count], 0
 	; run 80 times
-	;get attribute and number
+	; get attribute and number
 	colLoop:
 		mov ah, [season+ebx]
 		mov al, [season+ebx+1]
@@ -71,7 +71,7 @@ rowLoop:
         	mov     edx,5
         	int     80h
 		popa
-		;print the letter in the attribute
+		;print the letter in of the array in the color of the attribute
 		pusha
 		mov eax, 4
 		mov ebx, 1
@@ -83,8 +83,8 @@ rowLoop:
 		inc byte[count]
 		colBreak:
 		loop colLoop
+	; print a new line
 	call printNew
-	;print new line
 	pop ecx
 	loop rowLoop
 lastBreak:
@@ -94,6 +94,7 @@ mov eax, 1
 mov ebx, 0
 int 80h
 
+; function to print a new line on command
 printNew:
 	pusha
 	mov eax,4

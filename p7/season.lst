@@ -463,7 +463,7 @@
    463 00000006 B950000000              	mov ecx, 80
    464 0000000B C605[060F0000]00        	mov byte[count], 0
    465                                  	; run 80 times
-   466                                  	;get attribute and number
+   466                                  	; get attribute and number
    467                                  	colLoop:
    468 00000012 8AA3[00000000]          		mov ah, [season+ebx]
    469 00000018 8A83[01000000]          		mov al, [season+ebx+1]
@@ -479,7 +479,7 @@
    479 00000045 BA05000000                      	mov     edx,5
    480 0000004A CD80                            	int     80h
    481 0000004C 61                      		popa
-   482                                  		;print the letter in the attribute
+   482                                  		;print the letter in of the array in the color of the attribute
    483 0000004D 60                      		pusha
    484 0000004E B804000000              		mov eax, 4
    485 00000053 BB01000000              		mov ebx, 1
@@ -491,8 +491,8 @@
    491 00000068 FE05[060F0000]          		inc byte[count]
    492                                  		colBreak:
    493 0000006E E2A2                    		loop colLoop
-   494 00000070 E80F000000              	call printNew
-   495                                  	;print new line
+   494                                  	; print a new line
+   495 00000070 E80F000000              	call printNew
    496 00000075 59                      	pop ecx
    497 00000076 E28D                    	loop rowLoop
    498                                  lastBreak:
@@ -502,12 +502,13 @@
    502 0000007D BB00000000              mov ebx, 0
    503 00000082 CD80                    int 80h
    504                                  
-   505                                  printNew:
-   506 00000084 60                      	pusha
-   507 00000085 B804000000              	mov eax,4
-   508 0000008A BB01000000                      mov ebx,1
-   509 0000008F B9[050F0000]                    mov ecx,newline
-   510 00000094 BA01000000                      mov edx,1
-   511 00000099 CD80                            int 80h
-   512 0000009B 61                      	popa
-   513 0000009C C3                      	ret
+   505                                  ; function to print a new line on command
+   506                                  printNew:
+   507 00000084 60                      	pusha
+   508 00000085 B804000000              	mov eax,4
+   509 0000008A BB01000000                      mov ebx,1
+   510 0000008F B9[050F0000]                    mov ecx,newline
+   511 00000094 BA01000000                      mov edx,1
+   512 00000099 CD80                            int 80h
+   513 0000009B 61                      	popa
+   514 0000009C C3                      	ret
