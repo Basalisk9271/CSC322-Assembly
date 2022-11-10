@@ -1,5 +1,5 @@
 ; Gabe Imlay
-; CSC322 <11/02/22>
+; CSC322 <11/11/22>
 ; Project 7: The Autumn Season Cypher
 ; This project will decode a matrix of encoded numbers correlating to an 
 ; ASCII character and the number for each color of the character in each column. 
@@ -31,7 +31,16 @@ season:		db 87,55,88,56,89,57,90,58,91,59,92,60,93,61,94,62,95,63,96,64,97,65,98
 		db 87,55,88,56,89,57,90,58,91,59,92,60,93,61,94,62,95,63,96,64,97,65,98,66,99,67,100,68,101,69,102,70,103,71,104,72,105,73,106,74,108,69,96,70,101,71,143,72,124,73,136,74,134,75,135,76,127,77,128,78,88,79,89,80,90,81,132,82,133,83,143,84,144,85,148,86,138,87,146,88,119,89,120,90,117,91,121,92,131,99,132,100,133,101,134,102,135,103,136,104,137,105,138,106,139,107,140,108,141,109,142,110,143,111,144,112,145,113,146,114,147,115,148,116,149,117,150,118,151,119,152,120,153,121,154,122,155,123,156,124,157,125,158,126,159,127,160,128,161,129,162,130,163,131,164,132,165,133,166,134
 		db 87,55,88,56,89,57,90,58,91,59,92,60,93,61,94,62,95,63,96,64,97,65,98,66,99,67,100,68,101,69,102,70,103,71,104,72,105,73,106,74,107,75,108,76,109,77,110,78,111,79,112,80,113,81,105,76,106,77,117,78,118,79,119,80,120,81,121,82,112,83,113,84,123,91,124,92,125,93,126,94,127,95,128,96,129,97,130,98,131,99,132,100,133,101,134,102,135,103,136,104,137,105,138,106,139,107,140,108,141,109,142,110,143,111,144,112,145,113,146,114,147,115,148,116,149,117,150,118,151,119,152,120,153,121,154,122,155,123,156,124,157,125,158,126,159,127,160,128,161,129,162,130,163,131,164,132,165,133,166,134
 
+attrib: 	db 1bh
+		db "["
+		db "3"
+myAttrib:	db "0"
+		db "m"
+newline:	db 10
+count:		db 0
 SECTION .bss
+letter:		RESB 1
+color:		RESB 1
 
 SECTION .text
 global _main
@@ -44,10 +53,37 @@ mov ecx, 24
 rowLoop:
 	push ecx
 	mov ecx, 80
+	mov byte[count], 0
 	; run 80 times
+	;get attribute and number
 	colLoop:
-		; get the attribute and number and use the print sequence
+		mov ah, [season+ebx]
+		mov al, [season+ebx+1]
+		sub al, [count]
+		sub ah, [count]
+		mov byte[letter], ah
+		mov byte[myAttrib], al
+		;change color before printing 
+		pusha
+		mov     eax,4
+        	mov     ebx,1
+        	mov     ecx, attrib
+        	mov     edx,5
+        	int     80h
+		popa
+		;print the letter in the attribute
+		pusha
+		mov eax, 4
+		mov ebx, 1
+		mov ecx, letter
+		mov edx, 1
+		int 80h
+		popa
+		add ebx, 2
+		inc byte[count]
+		colBreak:
 		loop colLoop
+	call printNew
 	;print new line
 	pop ecx
 	loop rowLoop
@@ -57,3 +93,13 @@ lastBreak:
 mov eax, 1
 mov ebx, 0
 int 80h
+
+printNew:
+	pusha
+	mov eax,4
+        mov ebx,1
+        mov ecx,newline
+        mov edx,1
+        int 80h
+	popa
+	ret

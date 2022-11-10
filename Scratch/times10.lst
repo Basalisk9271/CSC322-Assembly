@@ -1,0 +1,48 @@
+     1                                  ; NAME
+     2                                  ; Assignment
+     3                                  ; Date
+     4                                  ; Etc...
+     5                                  
+     6                                  SECTION .data
+     7                                  ; define data/variables here.  Think DB, DW, DD, DQ
+     8 00000000 0300                    num1: dw 3
+     9 00000002 0E00                    num2: dw 14
+    10 00000004 4201                    num3: dw 322
+    11                                  
+    12                                  SECTION .bss
+    13                                  ; define uninitialized data here
+    14                                  
+    15                                  SECTION .text
+    16                                  global _main
+    17                                  _main:
+    18                                  
+    19                                  ; put your code here.
+    20 00000000 BBF5000000              mov ebx, 245
+    21 00000005 66A1[00000000]          mov ax, [num1]
+    22 0000000B E834000000              call t10
+    23 00000010 66A3[00000000]          mov [num1], ax
+    24 00000016 66A1[02000000]          mov ax, [num2]
+    25 0000001C E823000000              call t10
+    26 00000021 66A3[02000000]          mov [num2], ax
+    27 00000027 66A1[04000000]          mov ax, [num3]
+    28 0000002D E812000000              call t10
+    29 00000032 66A3[04000000]          mov [num3], ax
+    30                                  lastBreak:
+    31                                  
+    32                                  ; Normal termination code
+    33 00000038 B801000000              mov eax, 1
+    34 0000003D BB00000000              mov ebx, 0
+    35 00000042 CD80                    int 80h
+    36                                  
+    37                                  
+    38                                  ;;;; Times 10 function
+    39                                  ;;;; pass a word in the AX
+    40                                  ;;;; return that number times 10 in the AX
+    41                                  t10: 
+    42 00000044 53                          push ebx
+    43 00000045 6689C3                      mov bx, AX
+    44 00000048 66D1E0                      shl ax, 1   ;times 2
+    45 0000004B 66C1E303                    shl bx, 3   ;times 8
+    46 0000004F 6601D8                      add ax, bx ;times 10 original value
+    47 00000052 5B                          pop ebx
+    48 00000053 C3                          ret
