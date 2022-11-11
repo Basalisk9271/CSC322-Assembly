@@ -1,0 +1,99 @@
+     1                                  ; Gabe Imlay
+     2                                  ; CSC322 <11/11/22>
+     3                                  ; Project 8: Reverse Array with a Proc
+     4                                  ; This project will reverse the contents of an array by calling a 
+     5                                  ; procedure.  The procedure should work for any sized DWORD array of 
+     6                                  ; signed integers.  After the procedure’s code runs, the values in all 
+     7                                  ; registers should be unchanged from when the procedure was called.
+     8                                  
+     9                                  SECTION .data
+    10 00000000 010000000200000003-     array1: dd      1,2,3,4,5
+    11 00000009 000000040000000500-
+    12 00000012 0000               
+    13                                  len1:   EQU     ($-array1)
+    14                                  
+    15                                  
+    16 00000014 F6FFFFFFF7FFFFFFF8-     array2: dd      -10, -9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9
+    17 0000001D FFFFFFF9FFFFFFFAFF-
+    18 00000026 FFFFFBFFFFFFFCFFFF-
+    19 0000002F FFFDFFFFFFFEFFFFFF-
+    20 00000038 FFFFFFFF0000000001-
+    21 00000041 000000020000000300-
+    22 0000004A 000004000000050000-
+    23 00000053 000600000007000000-
+    24 0000005C 0800000009000000   
+    25                                  len2:   EQU     ($-array2)
+    26                                  
+    27                                  
+    28 00000064 000000000A00000014-     array3: dd  0,10,20,30,40,50,60,70,80,90
+    29 0000006D 0000001E0000002800-
+    30 00000076 0000320000003C0000-
+    31 0000007F 004600000050000000-
+    32 00000088 5A000000           
+    33 0000008C 640000006E00000078-       dd  100,110,120,130,140,150,160,170,180,190
+    34 00000095 000000820000008C00-
+    35 0000009E 000096000000A00000-
+    36 000000A7 00AA000000B4000000-
+    37 000000B0 BE000000           
+    38 000000B4 C8000000D2000000DC-       dd  200,210,220,230,240,250,260,270,280,290
+    39 000000BD 000000E6000000F000-
+    40 000000C6 0000FA000000040100-
+    41 000000CF 000E01000018010000-
+    42 000000D8 22010000           
+    43 000000DC 2C0100003601000040-       dd  300,310,320,330,340,350,360,370,380,390
+    44 000000E5 0100004A0100005401-
+    45 000000EE 00005E010000680100-
+    46 000000F7 00720100007C010000-
+    47 00000100 86010000           
+    48 00000104 900100009A010000A4-       dd  400,410,420,430,440,450,460,470,480,490,500
+    49 0000010D 010000AE010000B801-
+    50 00000116 0000C2010000CC0100-
+    51 0000011F 00D6010000E0010000-
+    52 00000128 EA010000F4010000   
+    53                                  len3:   EQU     ($-array3)
+    54                                  
+    55                                  SECTION .bss
+    56                                  
+    57                                  SECTION .text
+    58                                  global _main
+    59                                  _main:
+    60                                  
+    61                                  ; put your code here.
+    62                                  firstBreak:
+    63 00000000 60                      pusha	; This saves all of the registers in a certain state
+    64 00000001 BB14000000              mov ebx, len1	; move the size of the first array into the ebx so it can be used in the function
+    65 00000006 BA[00000000]            mov edx, array1	; move the address for the first array into the edx so it can be used in the function
+    66 0000000B C1EB02                  shr ebx, 2	; divide the size of the array by four since it is supposed to be a DWORD array
+    67 0000000E E831000000              call reverse	; call reverse function
+    68 00000013 BB50000000              mov ebx, len2	; rinse and repeat for arrays two and three
+    69 00000018 BA[14000000]            mov edx, array2
+    70 0000001D C1EB02                  shr ebx, 2
+    71 00000020 E81F000000              call reverse
+    72 00000025 BBCC000000              mov ebx, len3
+    73 0000002A BA[64000000]            mov edx, array3
+    74 0000002F C1EB02                  shr ebx, 2
+    75 00000032 E80D000000              call reverse
+    76 00000037 61                      popa	; restore all registers from the point before the code
+    77                                  lastBreak:
+    78                                  
+    79                                  ; Normal termination code
+    80 00000038 B801000000              mov eax, 1
+    81 0000003D BB00000000              mov ebx, 0
+    82 00000042 CD80                    int 80h
+    83                                  
+    84                                  ; take number from ecx which should be the length of the array to reverse
+    85                                  reverse:
+    86 00000044 89D9                        mov ecx, ebx
+    87 00000046 31C0                        xor eax, eax
+    88                                  	revLoop: ; loop to send all of the array elements to the stack
+    89 00000048 FF3402                          	push DWORD[edx+eax]
+    90 0000004B 83C004                          	add eax, 4
+    91                                          	revLoopBreak:
+    92 0000004E E2F8                            	loop revLoop
+    93 00000050 31C0                        xor eax, eax
+    94 00000052 89D9                        mov ecx, ebx
+    95                                      popLoop: ; loop to put the elements into the array in a reverse order
+    96 00000054 8F0402                          pop DWORD[edx+eax]
+    97 00000057 83C004                          add eax, 4
+    98 0000005A E2F8                            loop popLoop
+    99 0000005C C3                          ret	;send the function back to the regular code
