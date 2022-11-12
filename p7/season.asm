@@ -65,11 +65,11 @@ rowLoop:
 		mov byte[myAttrib], al
 		;change color before printing 
 		pusha
-		mov     eax,4
-        	mov     ebx,1
-        	mov     ecx, attrib
-        	mov     edx,5
-        	int     80h
+		mov eax,4
+		mov ebx,1
+		mov ecx, attrib
+		mov edx,5
+		int 80h
 		popa
 		;print the letter in of the array in the color of the attribute
 		pusha
@@ -98,9 +98,9 @@ int 80h
 printNew:
 	pusha
 	mov eax,4
-        mov ebx,1
-        mov ecx,newline
-        mov edx,1
-        int 80h
+	mov ebx,1
+	mov ecx,newline
+	mov edx,1
+	int 80h
 	popa
 	ret
