@@ -1,0 +1,64 @@
+     1                                  ; Gabe Imlay
+     2                                  ; CSC322 <12/02/22>
+     3                                  ; Project 9: Sort Array
+     4                                  ; This project will sort the contents of an array from the data section 
+     5                                  ; of the program before printing it out in the sorted order. 
+     6                                  
+     7                                  ;https://www.youtube.com/watch?v=0H6i6_Cqlfw&ab_channel=MalikShahzaibOfficial 
+     8                                  
+     9                                  ; address of the array, size of the array
+    10                                  %macro sort 2
+    11                                  
+    12                                  %endmacro
+    13                                  SECTION .data
+    14 00000000 C8002C010000FFFF00-     nums:	dw	 200, 300, 0, 65535, 0, 1, 65534, 300, 100
+    15 00000009 000100FEFF2C016400 
+    16                                  numslen:	EQU	($-nums)
+    17 00000012 00                      swap: db 0
+    18                                  
+    19                                  SECTION .bss
+    20                                  
+    21                                  SECTION .text
+    22                                  global _main
+    23                                  _main:
+    24                                  
+    25                                  ; put your code here.
+    26                                  ;sort nums, numslen
+    27 00000000 B912000000              mov ecx, numslen
+    28 00000005 BB[00000000]            mov ebx, nums
+    29 0000000A E80C000000              call selectionsort
+    30                                  
+    31                                  lastBreak:
+    32                                  
+    33                                  ; Normal termination code
+    34 0000000F B801000000              mov eax, 1
+    35 00000014 BB00000000              mov ebx, 0
+    36 00000019 CD80                    int 80h
+    37                                  
+    38                                  
+    39                                  ;mov length into ecx before calling and the array address into ebx
+    40                                  selectionsort:
+    41                                  
+    42 0000001B 60                      pusha  
+    43                                  ;xor eax, eax
+    44 0000001C D1E9                    shr ecx, 1
+    45                                  start:
+    46 0000001E 31C0                    	xor eax, eax
+    47                                  	comparison:
+    48 00000020 668B1443                      		mov dx, [ebx+eax*2]
+    49 00000024 663B544302                    		cmp dx, [ebx+eax*2+2]
+    50 00000029 7211                          		jb noswap
+    51                                        		; swap
+    52 0000002B 6687544302              		xchg dx, word[ebx+eax*2+2]
+    53 00000030 66891443                		mov word[ebx+eax*2], dx
+    54 00000034 40                      		inc eax
+    55 00000035 83F808                  		cmp eax, numslen/2-1
+    56 00000038 75E6                    		jne comparison
+    57 0000003A E2E2                    		loop start
+    58                                  	noswap:
+    59 0000003C 40                            		inc eax
+    60 0000003D 83F808                        		cmp eax, numslen/2-1
+    61 00000040 75DE                          		jne comparison 
+    62 00000042 E2DA                          		loop start
+    63 00000044 61                      popa
+    64 00000045 C3                      ret
